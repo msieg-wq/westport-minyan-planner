@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A weekly Mincha and Maariv feasibility planner for Westport commuters traveling from Grand Central.">
+  <title>Westport Weeknight Minyan Planner</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23091d2c'/%3E%3Cpath d='M32 11l6 12 13 1-9 9 2 13-12-6-12 6 2-13-9-9 13-1z' fill='none' stroke='%23f2c14e' stroke-width='4'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --ink: #102b3d;
+      --navy: #091d2c;
+      --paper: #f7f4ed;
+      --card: #fffdf8;
+      --gold: #f2c14e;
+      --blue: #2e6f95;
+      --teal: #167f78;
+      --red: #aa3a3a;
+      --muted: #5f6f78;
+      --line: #d9dedc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 3%, rgba(242,193,78,.22), transparent 22rem),
+        linear-gradient(180deg, #fbfaf6 0%, var(--paper) 100%);
+      font: 16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--blue); text-underline-offset: 3px; }
+    button { font: inherit; }
+    .shell { width: min(1160px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 56px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 760; letter-spacing: -.02em; }
+    .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: var(--navy); color: var(--gold); }
+    .location { color: var(--muted); font-size: .88rem; font-weight: 650; text-transform: uppercase; letter-spacing: .08em; }
+    .widget { overflow: hidden; background: var(--card); border: 1px solid rgba(16,43,61,.15); border-radius: 24px; box-shadow: 0 22px 70px rgba(9,29,44,.12); }
+    .topline { height: 8px; background: linear-gradient(90deg, var(--gold), #ffda73 42%, var(--teal)); }
+    .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 0; }
+    .verdict { padding: clamp(28px, 5vw, 58px); }
+    .eyebrow { color: var(--teal); font-weight: 800; font-size: .78rem; text-transform: uppercase; letter-spacing: .13em; }
+    h1 { margin: 10px 0 8px; max-width: 14ch; color: var(--navy); font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.5rem, 6vw, 5rem); line-height: .95; letter-spacing: -.055em; }
+    .time { display: flex; align-items: baseline; gap: 12px; margin: 26px 0 12px; }
+    .time strong { color: var(--navy); font-size: clamp(3.3rem, 8vw, 6.5rem); line-height: .8; letter-spacing: -.07em; }
+    .time span { font-weight: 800; color: var(--teal); }
+    .lede { max-width: 620px; margin: 0; color: #3e535f; font-size: 1.06rem; }
+    .alert { margin-top: 22px; display: flex; gap: 12px; align-items: flex-start; padding: 15px 17px; border-left: 4px solid var(--red); background: #fff2ef; border-radius: 4px 12px 12px 4px; }
+    .alert svg { flex: 0 0 auto; margin-top: 2px; }
+    .alert b { color: #7e2929; }
+    .side { background: var(--navy); color: #ecf3f4; padding: clamp(28px, 5vw, 48px); display: flex; flex-direction: column; justify-content: space-between; }
+    .side h2 { margin: 0 0 20px; color: white; font-family: Georgia, "Times New Roman", serif; font-size: 1.8rem; }
+    .assumption { display: grid; grid-template-columns: 34px 1fr; gap: 12px; margin: 17px 0; }
+    .assumption .num { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.32); border-radius: 50%; color: var(--gold); font-weight: 800; }
+    .assumption b { display: block; color: #fff; }
+    .assumption small { color: #b9c7cd; font-size: .85rem; }
+    .stamp { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.16); color: #b9c7cd; font-size: .82rem; }
+    .controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fff; }
+    .controls p { margin: 0; color: var(--muted); font-size: .91rem; }
+    .segmented { display: inline-flex; padding: 4px; border-radius: 999px; background: #e8eceb; }
+    .segmented button { border: 0; border-radius: 999px; padding: 8px 14px; background: transparent; color: var(--muted); cursor: pointer; font-weight: 720; }
+    .segmented button[aria-pressed="true"] { background: var(--navy); color: #fff; box-shadow: 0 2px 8px rgba(9,29,44,.2); }
+    .details { padding: 28px; }
+    .details h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.8rem; }
+    .sub { margin: 4px 0 20px; color: var(--muted); }
+    .week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .day { padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: #fff; transition: transform .18s ease, border-color .18s ease; }
+    .day:hover { transform: translateY(-2px); border-color: #9eb7bd; }
+    .day h3 { margin: 0 0 2px; color: var(--navy); font-size: 1rem; }
+    .day .date { color: var(--muted); font-size: .78rem; }
+    .day dl { margin: 14px 0 0; }
+    .day dl div { display: flex; justify-content: space-between; gap: 8px; padding: 5px 0; border-top: 1px solid #edf0ef; font-size: .84rem; }
+    .day dt { color: var(--muted); }
+    .day dd { margin: 0; font-weight: 760; }
+    .route { margin-top: 24px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; gap: 10px; }
+    .stop { padding: 14px; min-height: 88px; border-radius: 14px; background: #eef3f3; }
+    .stop small { display: block; color: var(--muted); }
+    .stop strong { display: block; margin-top: 3px; font-size: 1.18rem; }
+    .connector { width: 34px; height: 2px; background: var(--gold); position: relative; }
+    .connector::after { content: ""; position: absolute; right: -1px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+    .sources { padding: 24px 28px 28px; background: #eef1ef; border-top: 1px solid var(--line); }
+    .sources h2 { margin: 0 0 8px; font-size: 1rem; }
+    .sources p { margin: 6px 0; color: #50616a; font-size: .84rem; }
+    .sources .note { margin-top: 14px; font-weight: 650; color: #384b55; }
+    .hidden { display: none !important; }
+    @media (max-width: 850px) {
+      .hero { grid-template-columns: 1fr; }
+      .week { grid-template-columns: repeat(2, 1fr); }
+      .route { grid-template-columns: 1fr; }
+      .connector { width: 2px; height: 22px; margin-left: 26px; }
+      .connector::after { right: -3px; top: auto; bottom: -1px; }
+    }
+    @media (max-width: 560px) {
+      header { align-items: flex-start; flex-direction: column; }
+      .shell { width: min(100% - 18px, 1160px); padding-top: 16px; }
+      .widget { border-radius: 18px; }
+      .controls { align-items: flex-start; flex-direction: column; }
+      .week { grid-template-columns: 1fr; }
+      .details, .sources { padding-left: 18px; padding-right: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span> Westport Weeknight Minyan Planner</div>
+      <div class="location">Westport, Connecticut · 06880</div>
+    </header>
+
+    <article class="widget" aria-labelledby="result-title">
+      <div class="topline"></div>
+      <section class="hero">
+        <div class="verdict">
+          <div class="eyebrow">One time · Sunday–Thursday</div>
+          <h1 id="result-title">Best workable time</h1>
+          <div class="time"><strong>7:15</strong><span>PM</span></div>
+          <p class="lede">This is the earliest dependable <b>Maariv</b> time after the selected trains, a 10-minute station transfer, and the latest nightfall of the week.</p>
+          <div class="alert" role="note">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#aa3a3a" stroke-width="2"/><path d="M12 7v6m0 4h.01" stroke="#aa3a3a" stroke-width="2" stroke-linecap="round"/></svg>
+            <div><b>A combined Mincha/Maariv is not feasible after work this week.</b><br>By the time weekday commuters reach the shul at 7:05 PM, nightfall has already passed. Mincha should be prayed in Manhattan before departure; confirm the practice with the shul’s rabbi.</div>
+          </div>
+        </div>
+        <aside class="side" aria-label="Planning assumptions">
+          <div>
+            <h2>What the time includes</h2>
+            <div class="assumption"><span class="num">1</span><div><b>Leave work at 5:00 PM</b><small>Midtown or the Financial District</small></div></div>
+            <div class="assumption"><span class="num">2</span><div><b>Board at Grand Central</b><small>5:46 PM weekdays · 5:02 PM Sunday</small></div></div>
+            <div class="assumption"><span class="num">3</span><div><b>Westport + 10 minutes</b><small>At shul by 7:05 PM weekdays</small></div></div>
+          </div>
+          <div class="stamp">Sample week: October 18–22, 2026<br>MTA GTFS checked September 30, 2026</div>
+        </aside>
+      </section>
+
+      <div class="controls">
+        <p>Compare the commute that sets the weekly time.</p>
+        <div class="segmented" aria-label="Commute view">
+          <button type="button" data-view="weekday" aria-pressed="true">Mon–Thu</button>
+          <button type="button" data-view="sunday" aria-pressed="false">Sunday</button>
+        </div>
+      </div>
+
+      <section class="details">
+        <h2>Halachic window, day by day</h2>
+        <p class="sub">MyZmanim values are rounded down to the displayed minute below; full seconds were used in the comparison.</p>
+        <div class="week">
+          <article class="day"><h3>Sunday</h3><div class="date">Oct 18</div><dl><div><dt>Plag</dt><dd>4:59 PM</dd></div><div><dt>Sunset</dt><dd>6:07 PM</dd></div><div><dt>Nightfall</dt><dd>6:49 PM</dd></div></dl></article>
+          <article class="day"><h3>Monday</h3><div class="date">Oct 19</div><dl><div><dt>Plag</dt><dd>4:58 PM</dd></div><div><dt>Sunset</dt><dd>6:06 PM</dd></div><div><dt>Nightfall</dt><dd>6:47 PM</dd></div></dl></article>
+          <article class="day"><h3>Tuesday</h3><div class="date">Oct 20</div><dl><div><dt>Plag</dt><dd>4:56 PM</dd></div><div><dt>Sunset</dt><dd>6:05 PM</dd></div><div><dt>Nightfall</dt><dd>6:46 PM</dd></div></dl></article>
+          <article class="day"><h3>Wednesday</h3><div class="date">Oct 21</div><dl><div><dt>Plag</dt><dd>4:55 PM</dd></div><div><dt>Sunset</dt><dd>6:03 PM</dd></div><div><dt>Nightfall</dt><dd>6:44 PM</dd></div></dl></article>
+          <article class="day"><h3>Thursday</h3><div class="date">Oct 22</div><dl><div><dt>Plag</dt><dd>4:54 PM</dd></div><div><dt>Sunset</dt><dd>6:02 PM</dd></div><div><dt>Nightfall</dt><dd>6:43 PM</dd></div></dl></article>
+        </div>
+
+        <div class="route" id="weekday-route" aria-label="Weekday journey">
+          <div class="stop"><small>Work ends</small><strong>5:00 PM</strong>Manhattan</div><span class="connector"></span>
+          <div class="stop"><small>Train 1562</small><strong>5:46 PM</strong>Grand Central</div><span class="connector"></span>
+          <div class="stop"><small>Arrive</small><strong>6:55 PM</strong>Westport</div><span class="connector"></span>
+          <div class="stop"><small>10-minute transfer</small><strong>7:05 PM</strong>At the shul</div>
+        </div>
+        <div class="route hidden" id="sunday-route" aria-label="Sunday journey">
+          <div class="stop"><small>Ready to leave</small><strong>5:00 PM</strong>Manhattan</div><span class="connector"></span>
+          <div class="stop"><small>Train 6546</small><strong>5:02 PM</strong>Grand Central</div><span class="connector"></span>
+          <div class="stop"><small>Arrive</small><strong>6:18 PM</strong>Westport</div><span class="connector"></span>
+          <div class="stop"><small>10-minute transfer</small><strong>6:28 PM</strong>At the shul</div>
+        </div>
+      </section>
+
+      <section class="sources">
+        <h2>Sources & decision rule</h2>
+        <p><a href="https://www.myzmanim.com/search.aspx?lang=en" target="_blank" rel="noreferrer">MyZmanim</a>: Westport 06880 daily values for plag hamincha, sunset, and “nightfall – 3 stars” (36 minutes as degrees).</p>
+        <p><a href="https://www.mta.info/schedules/metro-north/new-haven" target="_blank" rel="noreferrer">MTA Metro-North New Haven Line</a>: official timetable/GTFS for Grand Central → Westport; schedule effective March 29, 2026 and subject to change.</p>
+        <p class="note">Planning aid only. Zmanim involve differing opinions and local practice; confirm the service format with a competent halachic authority, and re-check TrainTime before travel.</p>
+      </section>
+    </article>
+  </main>
+  <script>
+    const buttons = document.querySelectorAll('[data-view]');
+    const routes = {
+      weekday: document.querySelector('#weekday-route'),
+      sunday: document.querySelector('#sunday-route')
+    };
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      Object.entries(routes).forEach(([name, route]) => route.classList.toggle('hidden', name !== button.dataset.view));
+    }));
+  </script>
+</body>
+</html>
