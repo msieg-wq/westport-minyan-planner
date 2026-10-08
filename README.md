@@ -2,6 +2,10 @@
 
 A single-page planning widget that compares MyZmanim values for Westport, Connecticut 06880 with Metro-North New Haven Line schedules from Grand Central to Westport.
 
+## Live site
+
+https://msieg-wq.github.io/westport-minyan-planner/
+
 ## Published files
 
 GitHub Pages deploys the contents of `dist/`. The site is static and requires no build step.
